@@ -8,12 +8,14 @@ import { getProductById, getFeaturedProduct } from "@/sanity/queries/FetchProduc
 import AddTocartDynamicPage from "@/components/AddToCartDynamicPage";
 import { Metadata } from "next";
 
-type ProductDetailProps = {
-  params: { productid: string }; // Fixed type issue
-};
+interface ProductDetailProps {
+  params: { productid: string };
+}
 
 export async function generateMetadata({ params }: ProductDetailProps): Promise<Metadata> {
-  const product = await getProductById(params.productid);
+  const { productid } = params;
+  const product = await getProductById(productid);
+
   return {
     title: product ? `${product.name} - Product Page` : "Product Not Found",
     description: product ? product.description : "This product does not exist.",
@@ -21,11 +23,13 @@ export async function generateMetadata({ params }: ProductDetailProps): Promise<
 }
 
 export default async function ProductDetail({ params }: ProductDetailProps) {
-  if (!params?.productid) {
+  const { productid } = params;
+
+  if (!productid) {
     return <div className="text-center text-red-500">Invalid product ID</div>;
   }
 
-  const product = await getProductById(params.productid);
+  const product = await getProductById(productid);
   const featuredData = (await getFeaturedProduct()) || [];
 
   if (!product) {
