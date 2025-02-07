@@ -9,7 +9,7 @@ import AddTocartDynamicPage from "@/components/AddToCartDynamicPage";
 import { Metadata } from "next";
 
 type ProductDetailProps = {
-  params: Record<string, string>; // Ensure correct type
+  params: { productid: string }; // Ensure correct type
 };
 
 export async function generateMetadata({ params }: ProductDetailProps): Promise<Metadata> {
