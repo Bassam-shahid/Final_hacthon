@@ -6,13 +6,22 @@ import { CiInstagram, CiLinkedin, CiFacebook } from "react-icons/ci";
 import ShortSec from "@/components/ShortSec";
 import { getProductById, getFeaturedProduct } from "@/sanity/queries/FetchProduct";
 import AddTocartDynamicPage from "@/components/AddToCartDynamicPage";
+import { Metadata } from "next";
 
-interface ProductDetailProps {
-  params: { productid: string };
+type ProductDetailProps = {
+  params: Record<string, string>; // Ensure correct type
+};
+
+export async function generateMetadata({ params }: ProductDetailProps): Promise<Metadata> {
+  const product = await getProductById(params.productid);
+  return {
+    title: product ? `${product.name} - Product Page` : "Product Not Found",
+    description: product ? product.description : "This product does not exist.",
+  };
 }
 
 export default async function ProductDetail({ params }: ProductDetailProps) {
-  if (!params || !params.productid) {
+  if (!params?.productid) {
     return <div className="text-center text-red-500">Invalid product ID</div>;
   }
 
@@ -30,7 +39,6 @@ export default async function ProductDetail({ params }: ProductDetailProps) {
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-8 items-start">
           {/* Product Images */}
           <div className="space-y-4">
-            {/* Main Image */}
             <div className="relative aspect-square w-full max-w-md mx-auto sm:max-w-none">
               <Image
                 src={product.imageUrl}
@@ -48,7 +56,6 @@ export default async function ProductDetail({ params }: ProductDetailProps) {
           <div className="space-y-6">
             <h1 className="text-2xl sm:text-3xl font-semibold">{product.name}</h1>
             <p className="text-xl text-gray-700">Rs. {product.price}.00</p>
-
             <div className="flex items-center gap-2">
               <div className="flex text-yellow-500">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -57,7 +64,6 @@ export default async function ProductDetail({ params }: ProductDetailProps) {
               </div>
               <span className="text-sm text-gray-500">({product.rating} Customer Reviews)</span>
             </div>
-
             <p className="text-gray-600 leading-relaxed">{product.description}</p>
 
             {/* Add to Cart */}
