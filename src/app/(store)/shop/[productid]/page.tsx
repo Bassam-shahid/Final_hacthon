@@ -13,7 +13,15 @@ interface ProductDetailProps {
 }
 
 export async function generateMetadata({ params }: ProductDetailProps): Promise<Metadata> {
-  const productid = params.productid;
+  const productid = params?.productid; // Ensure safety
+
+  if (!productid) {
+    return {
+      title: "Product Not Found",
+      description: "This product does not exist.",
+    };
+  }
+
   const product = await getProductById(productid);
 
   return {
@@ -23,7 +31,7 @@ export async function generateMetadata({ params }: ProductDetailProps): Promise<
 }
 
 export default async function ProductDetail({ params }: ProductDetailProps) {
-  const productid = params.productid;
+  const productid = params?.productid;
 
   if (!productid) {
     return <div className="text-center text-red-500">Invalid product ID</div>;
