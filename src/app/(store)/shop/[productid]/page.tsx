@@ -9,11 +9,11 @@ import AddTocartDynamicPage from "@/components/AddToCartDynamicPage";
 import { Metadata } from "next";
 
 interface ProductDetailProps {
-  params: { productid: string };
+  params: Record<string, string>; // Ensuring correct typing
 }
 
 export async function generateMetadata({ params }: ProductDetailProps): Promise<Metadata> {
-  const { productid } = params;
+  const productid = params.productid;
   const product = await getProductById(productid);
 
   return {
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: ProductDetailProps): Promise<
 }
 
 export default async function ProductDetail({ params }: ProductDetailProps) {
-  const { productid } = params;
+  const productid = params.productid;
 
   if (!productid) {
     return <div className="text-center text-red-500">Invalid product ID</div>;
